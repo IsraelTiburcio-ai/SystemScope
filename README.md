@@ -1,190 +1,94 @@
-# SYSTEM SCOPE — Explorador de Sistemas y Fronteras
+# BOUNDARY RUN — Corre hacia el límite correcto
 
-**Nombre:** System Scope
 **Materia:** Optimización I
+**Unidad:** Gimnasio 1 — Introducción a la Teoría de Sistemas
 **Repositorio:** https://github.com/IsraelTiburcio-ai/SystemScope
 **Sitio publicado:** https://israeltiburcio-ai.github.io/SystemScope/
 
-Actividad / **Juego 3** de la colección de herramientas digitales de **Optimización I**.
-Unidad base: **Gimnasio 1 — Introducción a la Teoría de Sistemas**.
+Microjuego arcade educativo de **60–100 segundos**: el corredor avanza
+automáticamente y tú eliges la puerta de la frontera correcta para cada
+situación.
 
-> Una experiencia de zoom semántico para explorar sistemas desde diferentes niveles,
-> descubrir qué existe dentro y fuera de ellos y delimitar su alcance mediante sus fronteras.
+> La versión anterior (System Scope, explorador de sistemas) está preservada
+> bajo el tag `legacy-v1`.
 
----
+## Concepto académico
 
-## Objetivo
+Las **cuatro fronteras** del sistema, con la terminología del material:
 
-Que el estudiante pueda:
-
-1. reconocer qué es el sistema que está analizando;
-2. distinguir componentes que funcionan como **subsistemas**;
-3. reconocer el sistema mayor o **suprasistema**;
-4. comprender la relación entre **sistema y entorno**;
-5. establecer el **alcance** del sistema;
-6. identificar sus **fronteras** (física, económica, técnica y temporal);
-7. comprender que un mismo objeto cambia de rol según el nivel de análisis
-   (subsistema / sistema / suprasistema).
-
-La experiencia se diferencia de los otros juegos de la colección:
-
-| Juego | Foco |
+| Frontera | Se relaciona con |
 |---|---|
-| OptiQuest | Aprender y repasar |
-| System Lab | Construir y clasificar |
-| **System Scope** | **Explorar y delimitar** |
+| 📍 **Física** | límite espacial o corporal |
+| 💰 **Económica** | capacidad monetaria |
+| ⚙️ **Técnica** | nivel de conocimientos o capacidad técnica |
+| ⏱️ **Temporal** | duración en el tiempo |
 
----
+## Cómo se juega
 
-## Cómo funciona
+1. Pulsa **JUGAR**.
+2. Aparece una situación breve (p. ej. "El proyecto termina en diciembre.").
+3. Toca la puerta de la frontera correcta (**TEMPORAL** en el ejemplo).
+4. Correcto: la puerta se abre, el corredor acelera y ganas puntos (con combo).
+   Incorrecto: pequeño choque, pierdes velocidad y continúas.
+5. Al cruzar la meta: resultado (correctas, tiempo, velocidad y puntos).
 
-System Scope es una aplicación web de **página única** (sin backend ni base de datos)
-que combina:
+Una partida = **6 situaciones**, aproximadamente **60–100 segundos**.
+Sin tutorial, sin módulos, sin campaña. Solo jugar.
 
-- **Observatorio de sistemas** — mapa SVG navegable con zoom semántico real. Se entra
-  a los subsistemas, se sale hacia el suprasistema y se observa el entorno.
-- **Tutorial interactivo** — primera visita guiada dentro del observatorio.
-- **Guía «El nivel cambia»** — práctica para ver cómo cambian los roles según el punto
-  de referencia.
-- **6 misiones** en un mapa de progreso:
-  1. *Dentro del Sistema* — identificar subsistemas (arrastrar / seleccionar).
-  2. *Fuera del Sistema* — identificar el suprasistema.
-  3. *El Nivel Cambia* — práctica de cambio de referencia en el observatorio.
-  4. *Estableciendo Fronteras* — Configurador de Alcance + asignar tarjetas a las
-     cuatro fronteras (6 escenarios).
-  5. *Fronteras en Acción* — detectar qué frontera cambia en 12 eventos.
-  6. *Misión Final* — delimitar por completo el sistema de entrega de medicamentos.
-- **Resultados** — mapa final del sistema con leyenda, estadísticas y «Ver análisis».
-- **Logros** — 6 insignias desbloqueables.
-- **Puntuación** — 100/70/40 puntos por intento (1º/2º/3º), pistas −20, bonus de
-  misión perfecta +300 y precisión general.
+## Tecnologías
 
----
+- HTML5, CSS3 y JavaScript ES6+ (vanilla). Sin frameworks.
+- Sonido sintetizado con WebAudio (sin archivos).
+- SVG original para el corredor; gráficos propios con CSS.
+- `localStorage` solo para: mejor puntuación y preferencia de sonido.
+- Accesibilidad: teclado (teclas `1–4` para elegir puerta, `Enter` para
+  jugar/repetir), focus visible, `aria-label` y `prefers-reduced-motion`.
 
-## Estructura
+## Desarrollo local
 
-```
-system-scope/
-├── index.html          # Shell de la aplicación y puntos de montaje
-├── README.md
-├── css/
-│   ├── variables.css   # Paleta, tipografías, radios, sombras
-│   ├── base.css        # Reset, fondo, botones, logo, tipografía
-│   ├── layout.css      # HUD, home, intro, progreso, logros
-│   ├── components.css  # Modales, toasts, tarjetas, chips, misiones, fronteras
-│   ├── map.css         # Estilos del mapa SVG y del observatorio
-│   ├── animations.css  # Keyframes y prefers-reduced-motion
-│   └── responsive.css  # Tablet, móvil, touch
-├── js/
-│   ├── state.js        # Estado en memoria y reglas de desbloqueo
-│   ├── storage.js      # localStorage (progress guardado)
-│   ├── audio.js        # Efectos WebAudio sintetizados (sin archivos)
-│   ├── scoring.js      # Puntos, precisión, bonus, pistas
-│   ├── achievements.js # Definición y evaluación de logros
-│   ├── ui.js           # Íconos SVG propios, toasts, modales, drag & drop
-│   ├── router.js       # Cambio de pantallas
-│   ├── mapEngine.js    # Dibuja el nivel de un sistema en SVG
-│   ├── zoomEngine.js   # Cámara y animación de zoom semántico
-│   ├── boundaries.js   # Configurador de alcance y "Define el alcance"
-│   ├── missions.js     # Misiones 1–4, Misión final y Resultados
-│   └── app.js          # Arranque, home, tutorial, observatorio, progreso, logros
-├── data/
-│   ├── systems.js      # Grafo de sistemas: subsistemas, suprasistema, entorno, fronteras
-│   ├── missions.js     # Datos de misiones 1 y 2 (+ pistas y retroalimentación)
-│   ├── boundaries.js   # Escenarios "Define el alcance" y 12 eventos de frontera
-│   └── finalChallenge.js # Datos de la Misión Final
-├── assets/audio/       # (opcional) sin archivos: el audio se sintetiza
-└── test/               # Pruebas automáticas con jsdom (opcional)
-```
-
-## Edición de contenidos
-
-Todo el contenido académico vive en `data/` y está separado de la lógica:
-
-- **Sistemas** (`data/systems.js`): cada nodo tiene `id`, `name`, `icon`, `blurb`,
-  `parent` (suprasistema), `children` (subsistemas), `env` (entorno) y `boundaries`
-  (textos de las cuatro fronteras). Se puede añadir o reordenar ramas completas.
-- **Misiones 1 y 2** (`data/missions.js`): casos, elementos a clasificar y opciones,
-  con `hint` y `wrongWhy` por elemento.
-- **Fronteras** (`data/boundaries.js`): escenarios para "Define el alcance"
-  (tarjetas con su categoría `physical | economic | technical | temporal | out`)
-  y eventos de cambio de frontera (medidores iniciales, evento, respuesta y
-  explicación).
-- **Misión Final** (`data/finalChallenge.js`): las 5 etapas del desafío completo.
-
-## Almacenamiento de progreso
-
-El progreso se guarda en `localStorage` con la clave `systemscope_v1`:
-
-- misiones completadas y su porcentaje de precisión;
-- puntuación, estadísticas y precisión;
-- logros desbloqueados;
-- tutorial visto, sonido activado/desactivado;
-- nivel de exploración del observatorio (último sistema visitado, profundidad).
-
-Al volver, el botón **Continuar misión** lleva directo al mapa de progreso.
-**Reiniciar exploración** borra todo el guardado (usa un modal propio, sin
-`confirm()` ni `alert()`).
-
-## Ejecución local
-
-Abre `index.html` directamente en un navegador, o usa un servidor estático
-(recomendado):
+Abre `index.html` directamente, o con un servidor estático:
 
 ```bash
-# Python 3
 python3 -m http.server 8000
 # abre http://localhost:8000
 ```
 
-```bash
-# Node
-npx serve .
+## Estructura
+
+```
+├── index.html          # Portada + gameplay + resultado
+├── css/
+│   └── game.css        # Todo el estilo del microjuego
+├── js/
+│   ├── data.js         # Situaciones de frontera (editable)
+│   └── game.js         # Lógica, sonido, animaciones, partículas
+└── .github/
+    └── workflows/
+        └── pages.yml   # Autodeploy a GitHub Pages
 ```
 
-## Pruebas automáticas (opcional)
+## Editar contenido
 
-```bash
-npm i jsdom            # solo para el entorno de pruebas
-NODE_PATH=node_modules node test/smoke.js
-NODE_PATH=node_modules node test/extra.js
+En `js/data.js` se editan las **situaciones** del juego:
+
+```js
+{ text: "El proyecto termina en diciembre.", kind: "temporal", note: "duración en el tiempo" }
 ```
 
-Recorren la experiencia completa (tutorial, misiones, misión final, logros,
-persistencia) y las rutas de error (respuestas incorrectas, pistas, bloqueo de
-misiones y reinicio).
+- `text`: situación breve que ve el estudiante.
+- `kind`: `physical` | `economic` | `technical` | `temporal`.
+- `note`: frase corta de refuerzo que se muestra al acertar.
 
-## Publicar en GitHub Pages
+El número de decisiones por partida se ajusta en `js/game.js` con la constante
+`ROUNDS` (por defecto 6).
 
-El sitio está publicado en **https://israeltiburcio-ai.github.io/SystemScope/** con
-despliegue automático mediante GitHub Actions.
+## GitHub Pages y autodeploy
 
-Flujo de autodeploy:
+Sitio: **https://israeltiburcio-ai.github.io/SystemScope/**
 
 ```text
 push a main → GitHub Actions (.github/workflows/pages.yml) → GitHub Pages
 ```
 
-El workflow se ejecuta con cada `push` a `main` (y manualmente con
-`workflow_dispatch`), usando `actions/checkout`, `actions/configure-pages`,
-`actions/upload-pages-artifact` y `actions/deploy-pages`. No hay build: el
-contenido estático se publica tal cual.
-
-### Desplegar manualmente (alternativa)
-
-1. Crea un repositorio y coloca el contenido de `system-scope` en la raíz.
-2. Sube los archivos (`git add . && git commit && git push`).
-3. En el repositorio: **Settings → Pages → Source: Deploy from a branch**,
-   elige la rama `main` y carpeta `/root` (o `/docs` si lo prefieres).
-4. Abre la URL `https://usuario.github.io/repo/`.
-
-Las rutas son relativas, por lo que funciona también si el juego queda en una
-subcarpeta (por ejemplo `/repo/system-scope/`).
-
-## Restricciones técnicas
-
-- HTML5, CSS3 y JavaScript ES6+ en **vanilla**. Sin frameworks ni librerías pesadas.
-- Sin backend, sin servidor, sin base de datos.
-- Gráficos vectoriales propios (SVG) e íconos originales; sin assets ni marcas externas.
-- Interacciones con mouse, touch y teclado; `prefers-reduced-motion` respetado.
-- Interfaz 100 % en español, terminología del Gimnasio 1 conservada.
+El workflow se ejecuta en cada push a `main` (y manualmente con
+`workflow_dispatch`). Publica el contenido estático tal cual; no requiere build.

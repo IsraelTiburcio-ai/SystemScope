@@ -3,195 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="description" content="System Scope — Explorador de Sistemas y Fronteras. Optimización I, Gimnasio 1." />
-  <title>SYSTEM SCOPE — Explorador de Sistemas y Fronteras</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Ccircle cx='24' cy='24' r='20' fill='none' stroke='%234ee6ff' stroke-opacity='.3' stroke-width='2'/%3E%3Ccircle cx='24' cy='24' r='13' fill='none' stroke='%234ee6ff' stroke-opacity='.6' stroke-width='2'/%3E%3Ccircle cx='24' cy='24' r='6' fill='none' stroke='%234ee6ff' stroke-width='2'/%3E%3Ccircle cx='24' cy='24' r='2.4' fill='%234ee6ff'/%3E%3C/svg%3E" />
-  <link rel="stylesheet" href="css/variables.css" />
-  <link rel="stylesheet" href="css/base.css" />
-  <link rel="stylesheet" href="css/layout.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <link rel="stylesheet" href="css/map.css" />
-  <link rel="stylesheet" href="css/animations.css" />
-  <link rel="stylesheet" href="css/responsive.css" />
+  <meta name="description" content="BOUNDARY RUN — Corre hacia el límite correcto. Fronteras física, económica, técnica y temporal." />
+  <title>BOUNDARY RUN — Corre hacia el límite correcto</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='22' fill='none' stroke='%234ee6ff' stroke-width='4'/%3E%3Ccircle cx='32' cy='32' r='9' fill='%234ee6ff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/game.css" />
 </head>
 <body>
-  <canvas id="bg-canvas" aria-hidden="true"></canvas>
-  <div id="bg-grid" aria-hidden="true"></div>
+  <canvas id="bg" aria-hidden="true"></canvas>
 
-  <div id="app">
-
-    <!-- ============ HUD ============ -->
-    <header id="hud" hidden>
-      <div class="hud-left">
-        <button id="hud-logo" class="hud-logo-btn" aria-label="Ir al inicio">
-          <span class="logo-icon">#LOGO#</span>
-        </button>
-        <div class="hud-word">SYSTEM&nbsp;<span class="hud-word-accent">SCOPE</span></div>
+  <!-- ================= PORTADA ================= -->
+  <section id="cover" class="screen">
+    <div class="cover-inner">
+      <div class="cover-runner" id="cover-runner" aria-hidden="true"></div>
+      <h1 class="cover-title">BOUNDARY <span>RUN</span></h1>
+      <p class="cover-sub">Corre hacia el límite correcto</p>
+      <p class="cover-hint">Cada situación corresponde a una frontera: toca la puerta correcta.</p>
+      <button id="btn-play" class="btn-big" autofocus>JUGAR</button>
+      <div class="cover-tools">
+        <button id="btn-sound" class="tool-btn" aria-label="Activar o desactivar sonido"></button>
+        <span class="best-chip" id="best-chip">MEJOR: —</span>
       </div>
+    </div>
+  </section>
+
+  <!-- ================= GAMEPLAY ================= -->
+  <section id="game" class="screen" hidden>
+    <div class="hud">
+      <div class="hud-score" id="hud-score">0</div>
+      <div class="hud-dots" id="hud-dots" role="status" aria-label="Progreso"></div>
       <div class="hud-right">
-        <div class="hud-stat hud-stat-pts" title="Puntos">
-          <span class="hud-stat-label">Puntos</span>
-          <b id="hud-score">0</b>
-        </div>
-        <div class="hud-stat" title="Precisión">
-          <span class="hud-stat-label">Precisión</span>
-          <b id="hud-precision">—</b>
-        </div>
-        <button id="hud-sound" class="hud-btn" aria-label="Activar o desactivar sonido" title="Sonido">#SOUND-ON#</button>
-        <button id="hud-observatory" class="hud-btn" aria-label="Abrir el observatorio de sistemas" title="Observatorio">#OBS#</button>
-        <button id="hud-progress" class="hud-btn" aria-label="Abrir el mapa de progreso" title="Mapa de progreso">#PROG#</button>
-        <button id="hud-achievements" class="hud-btn" aria-label="Ver logros" title="Logros">#TROPHY#</button>
-        <button id="hud-tutorial" class="hud-btn" aria-label="Ver el tutorial" title="Ver tutorial">#HELP#</button>
-        <button id="hud-home" class="hud-btn" aria-label="Volver al inicio" title="Inicio">#HOME#</button>
+        <span class="hud-time mono" id="hud-time">0s</span>
+        <button id="btn-restart" class="tool-btn" aria-label="Reiniciar partida" title="Reiniciar">↻</button>
       </div>
-    </header>
+    </div>
 
-    <main id="main">
+    <div class="stage">
+      <div class="situation-box" id="situation-box">
+        <div class="situation" id="situation" role="status" aria-live="polite"></div>
+        <div class="situation-bar"><i id="situation-fill"></i></div>
+      </div>
 
-      <!-- ============ HOME ============ -->
-      <section id="screen-home" class="screen" data-screen="home">
-        <div class="home-wrap">
-          <div class="home-orb" aria-hidden="true"></div>
-          <div class="home-brand">
-            <span class="logo-icon logo-icon-big" aria-hidden="true">#LOGO#</span>
-            <h1 class="home-title">SYSTEM <span>SCOPE</span></h1>
-            <p class="home-subtitle">Explorador de Sistemas y Fronteras</p>
-            <p class="home-tagline">
-              Explora sistemas desde diferentes niveles, descubre qué existe dentro y fuera de ellos
-              y aprende a definir su alcance.
-            </p>
-          </div>
-          <div class="home-actions">
-            <button id="btn-start" class="btn btn-primary btn-lg">INICIAR EXPLORACIÓN</button>
-            <button id="btn-continue" class="btn btn-ghost btn-lg" hidden>CONTINUAR MISIÓN</button>
-            <div class="home-mini-actions">
-              <button id="btn-instructions" class="btn btn-ghost">Instrucciones</button>
-              <button id="btn-reset" class="btn btn-ghost btn-danger-ghost">Reiniciar progreso</button>
-              <button id="btn-sound-home" class="btn btn-ghost">#SOUND-ON#&nbsp; Sonido: activado</button>
-            </div>
-          </div>
-          <footer class="home-footer">
-            <span>Optimización I — Gimnasio 1 · Introducción a la Teoría de Sistemas</span>
-            <button id="btn-credits" class="link-btn">Créditos</button>
-          </footer>
+      <div class="doors" id="doors">
+        <button class="door d-physical" data-kind="physical" aria-label="Frontera física">
+          <span class="d-ico">📍</span><span class="d-name">FÍSICA</span>
+        </button>
+        <button class="door d-economic" data-kind="economic" aria-label="Frontera económica">
+          <span class="d-ico">💰</span><span class="d-name">ECONÓMICA</span>
+        </button>
+        <button class="door d-technical" data-kind="technical" aria-label="Frontera técnica">
+          <span class="d-ico">⚙️</span><span class="d-name">TÉCNICA</span>
+        </button>
+        <button class="door d-temporal" data-kind="temporal" aria-label="Frontera temporal">
+          <span class="d-ico">⏱️</span><span class="d-name">TEMPORAL</span>
+        </button>
+      </div>
+
+      <div class="track" id="track">
+        <div class="track-lines" id="track-lines" aria-hidden="true"></div>
+        <div class="track-lanes" aria-hidden="true"></div>
+        <div class="runner" id="runner" aria-hidden="true">
+          <svg viewBox="0 0 64 64" class="runner-svg">
+            <defs>
+              <linearGradient id="bodyG" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#6eefff"/>
+                <stop offset="100%" stop-color="#2aa9c9"/>
+              </linearGradient>
+            </defs>
+            <ellipse class="runner-body" cx="32" cy="34" rx="20" ry="24" fill="url(#bodyG)"/>
+            <rect class="runner-visor" x="24" y="22" width="26" height="12" rx="6" fill="#0a1830"/>
+            <circle class="runner-eye" cx="30" cy="28" r="2.4" fill="#4ee6ff"/>
+            <circle class="runner-eye" cx="40" cy="28" r="2.4" fill="#4ee6ff"/>
+            <g class="runner-legs" stroke="#0a1830" stroke-width="5" stroke-linecap="round">
+              <line class="leg leg-a" x1="24" y1="54" x2="20" y2="62"/>
+              <line class="leg leg-b" x1="40" y1="54" x2="44" y2="62"/>
+            </g>
+          </svg>
         </div>
-      </section>
+        <div class="particles" id="particles" aria-hidden="true"></div>
+      </div>
+    </div>
 
-      <!-- ============ INTRO ============ -->
-      <section id="screen-intro" class="screen" data-screen="intro" hidden>
-        <div class="intro-wrap panel-card">
-          <span class="logo-icon" aria-hidden="true">#LOGO#</span>
-          <h2 class="intro-title">Bienvenido, <span>Analista de Alcance</span></h2>
-          <p class="intro-text">
-            Todo sistema forma parte de algo mayor y, al mismo tiempo, puede contener sistemas más pequeños.
-          </p>
-          <p class="intro-text">
-            Tu misión es descubrir dónde comienza, dónde termina y qué existe dentro y fuera de cada sistema,
-            para después delimitar su alcance mediante sus fronteras.
-          </p>
-          <div class="intro-actions">
-            <button id="btn-intro-start" class="btn btn-primary btn-lg">COMENZAR EXPLORACIÓN</button>
-            <button id="btn-intro-skip" class="btn btn-ghost">Omitir tutorial</button>
-          </div>
+    <!-- Resultado -->
+    <div id="result" class="result" hidden>
+      <div class="result-card">
+        <div class="result-title">¡META!</div>
+        <div class="result-stats">
+          <div class="rs"><b id="res-correct">—</b><span>correctas</span></div>
+          <div class="rs"><b id="res-time">—</b><span>tiempo</span></div>
+          <div class="rs"><b id="res-speed">☆☆☆☆☆</b><span>velocidad</span></div>
+          <div class="rs"><b id="res-score">0</b><span>puntos</span></div>
         </div>
-      </section>
+        <div class="result-best" id="res-best">MEJOR: —</div>
+        <button id="btn-again" class="btn-big">CORRER DE NUEVO</button>
+      </div>
+    </div>
+  </section>
 
-      <!-- ============ PROGRESS ============ -->
-      <section id="screen-progress" class="screen" data-screen="progress" hidden>
-        <div class="progress-wrap">
-          <header class="screen-head">
-            <h2>MAPA DE <span>PROGRESO</span></h2>
-            <p class="screen-sub">Ruta de exploración del Analista de Alcance</p>
-          </header>
-          <div id="progress-map" class="progress-map"></div>
-          <div class="progress-stats" id="progress-stats"></div>
-        </div>
-      </section>
+  <div id="toast" role="status" aria-live="polite"></div>
 
-      <!-- ============ OBSERVATORY / EXPLORER ============ -->
-      <section id="screen-explorer" class="screen" data-screen="explorer" hidden>
-        <div class="explorer-wrap">
-          <div class="explorer-main">
-            <div class="explorer-toolbar">
-              <button id="exp-home" class="btn btn-ghost">◀ Volver</button>
-              <div class="exp-path" id="exp-path"></div>
-              <div class="exp-tools">
-                <button id="exp-ref" class="btn btn-ghost">Guía: El nivel cambia</button>
-              </div>
-            </div>
-            <div id="exp-viewport" class="exp-viewport">
-              <div id="exp-blur" class="exp-blur" aria-hidden="true"></div>
-              <svg id="exp-svg" class="exp-svg" role="img" aria-label="Mapa semántico de sistemas"></svg>
-              <div id="exp-controls" class="exp-controls">
-                <button id="exp-out" class="exp-ctl" aria-label="Salir al suprasistema" title="Salir al suprasistema">⬆</button>
-                <button id="exp-home2" class="exp-ctl" aria-label="Volver al nivel inicial" title="Volver al nivel inicial">⌂</button>
-              </div>
-              <div id="exp-coach" class="exp-coach" hidden></div>
-            </div>
-          </div>
-          <aside id="exp-info" class="exp-info" aria-live="polite"></aside>
-        </div>
-      </section>
-
-      <!-- ============ MISSION ============ -->
-      <section id="screen-mission" class="screen" data-screen="mission" hidden>
-        <div id="mission-host"></div>
-      </section>
-
-      <!-- ============ FINAL CHALLENGE ============ -->
-      <section id="screen-final" class="screen" data-screen="final" hidden>
-        <div id="final-host"></div>
-      </section>
-
-      <!-- ============ RESULTS ============ -->
-      <section id="screen-results" class="screen" data-screen="results" hidden>
-        <div id="results-host"></div>
-      </section>
-
-      <!-- ============ ACHIEVEMENTS ============ -->
-      <section id="screen-achievements" class="screen" data-screen="achievements" hidden>
-        <div class="ach-wrap">
-          <header class="screen-head">
-            <h2>SALA DE <span>LOGROS</span></h2>
-            <p class="screen-sub">Marcas obtenidas por el Analista de Alcance</p>
-          </header>
-          <div id="ach-grid" class="ach-grid"></div>
-          <div class="ach-footer">
-            <button id="ach-back" class="btn btn-ghost">◀ Volver</button>
-          </div>
-        </div>
-      </section>
-
-    </main>
-  </div>
-
-  <div id="toast-region" class="toast-region" aria-live="polite"></div>
-  <div id="modal-root"></div>
-
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <filter id="soft-glow" x="-80%" y="-80%" width="260%" height="260%">
-        <feGaussianBlur stdDeviation="6" result="b"/>
-        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-    </defs>
-  </svg>
-
-  <script src="data/systems.js"></script>
-  <script src="data/missions.js"></script>
-  <script src="data/boundaries.js"></script>
-  <script src="data/finalChallenge.js"></script>
-  <script src="js/state.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/audio.js"></script>
-  <script src="js/scoring.js"></script>
-  <script src="js/achievements.js"></script>
-  <script src="js/ui.js"></script>
-  <script src="js/router.js"></script>
-  <script src="js/mapEngine.js"></script>
-  <script src="js/zoomEngine.js"></script>
-  <script src="js/boundaries.js"></script>
-  <script src="js/missions.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/game.js"></script>
 </body>
 </html>
