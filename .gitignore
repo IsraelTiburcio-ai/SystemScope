@@ -1,0 +1,18 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Node (solo para pruebas locales opcionales)
+node_modules/
+package-lock.json
+package.json
+
+# Logs y temporales
+*.log
+tmp/
+*.tmp
+
+# Editor
+.vscode/
+.idea/
+*.swp
