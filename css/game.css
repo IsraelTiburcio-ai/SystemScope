@@ -77,7 +77,32 @@ button { font-family: inherit; color: inherit; cursor: pointer; background: none
   text-transform: uppercase;
   font-size: 13px;
 }
-.cover-hint { margin-top: 18px; color: var(--muted); font-size: 15px; max-width: 420px; }
+.cover-hint { margin-top: 16px; color: var(--muted); font-size: 14.5px; max-width: 430px; line-height: 1.5; }
+
+.cover-topic {
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--physical);
+  opacity: 0.85;
+}
+.cover-legend { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+.lg {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--door);
+  color: var(--door);
+  background: var(--door-bg);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.lg-physical { --door: var(--physical); --door-bg: rgba(78, 230, 255, 0.12); }
+.lg-economic { --door: var(--economic); --door-bg: rgba(255, 209, 102, 0.12); }
+.lg-technical { --door: var(--technical); --door-bg: rgba(179, 136, 255, 0.12); }
+.lg-temporal { --door: var(--temporal); --door-bg: rgba(126, 240, 160, 0.12); }
 
 .btn-big {
   margin-top: 26px;
