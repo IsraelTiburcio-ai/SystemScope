@@ -322,6 +322,37 @@ button { font-family: inherit; color: inherit; cursor: pointer; background: none
 .runner.bump { animation: runner-bump 0.42s ease; }
 .runner.gone { opacity: 0; }
 
+/* Salto sobre obstáculo (respuesta correcta) */
+.runner.jump { animation: runner-jump 0.44s cubic-bezier(0.25, 0.7, 0.35, 1); }
+.runner.jump .runner-legs { animation: none; transform: rotate(0deg) scaleY(0.5); }
+.runner.jump .runner-body { animation: none; }
+
+/* Tropiezo / voltereta (respuesta incorrecta) */
+.runner.crash { animation: runner-crash 0.5s cubic-bezier(0.3, 0.6, 0.4, 1); }
+.runner.crash .runner-legs { animation: none; }
+.runner.crash .runner-body { animation: none; }
+
+/* Traspié sin choque (tiempo agotado) */
+.runner.stumble { animation: runner-stumble 0.5s ease; }
+.runner.stumble .runner-legs { animation: none; }
+.runner.stumble .runner-body { animation: none; }
+
+/* Obstáculo de la pista */
+.obstacle {
+  position: absolute;
+  width: 46px; height: 34px;
+  transform: translateX(-50%);
+  border-radius: 7px;
+  background: repeating-linear-gradient(135deg, #ffb454 0 9px, #0a1830 9px 18px);
+  border: 2px solid rgba(255, 180, 84, 0.85);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  z-index: 9;
+  pointer-events: none;
+  animation: obstacle-drop 0.28s ease-out both;
+}
+.obstacle.cleared { animation: obstacle-cleared 0.45s ease-in forwards; }
+.obstacle.broken { animation: obstacle-broken 0.45s ease-out forwards; }
+
 /* Partículas */
 .spark {
   position: absolute;
@@ -478,6 +509,40 @@ button { font-family: inherit; color: inherit; cursor: pointer; background: none
 @keyframes track-scroll { from { transform: translateY(0); } to { transform: translateY(56px); } }
 @keyframes run-cycle { from { transform: rotate(-18deg); } to { transform: rotate(18deg); } }
 @keyframes runner-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes runner-jump {
+  0% { transform: translateX(-50%) translateY(0) scale(1, 1) rotate(0deg); }
+  22% { transform: translateX(-50%) translateY(8px) scale(1.18, 0.82) rotate(0deg); }
+  52% { transform: translateX(-50%) translateY(-94px) scale(0.95, 1.06) rotate(-10deg); }
+  82% { transform: translateX(-50%) translateY(6px) scale(1.16, 0.86) rotate(2deg); }
+  100% { transform: translateX(-50%) translateY(0) scale(1, 1) rotate(0deg); }
+}
+@keyframes runner-crash {
+  0% { transform: translateX(-50%) translateY(0) rotate(0deg) scale(1); }
+  18% { transform: translateX(-50%) translateY(-20px) rotate(-20deg) scale(1.06); }
+  48% { transform: translateX(-50%) translateY(22px) rotate(-170deg) scale(0.96); }
+  74% { transform: translateX(-50%) translateY(-8px) rotate(-300deg) scale(1.02); }
+  100% { transform: translateX(-50%) translateY(0) rotate(-360deg) scale(1); }
+}
+@keyframes runner-stumble {
+  0%, 100% { transform: translateX(-50%) translateY(0) rotate(0deg); }
+  20% { transform: translateX(-50%) translateY(-7px) rotate(-11deg); }
+  40% { transform: translateX(-50%) translateY(10px) rotate(9deg); }
+  60% { transform: translateX(-50%) translateY(-5px) rotate(-7deg); }
+  80% { transform: translateX(-50%) translateY(4px) rotate(4deg); }
+}
+@keyframes obstacle-drop {
+  from { transform: translateX(-50%) translateY(-46px) scale(0.5); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+}
+@keyframes obstacle-cleared {
+  from { transform: translateX(-50%) translateY(0) scale(1); opacity: 1; }
+  to { transform: translateX(-50%) translateY(64px) scale(0.6); opacity: 0; }
+}
+@keyframes obstacle-broken {
+  0% { transform: translateX(-50%) translateY(0) rotate(0deg) scale(1); }
+  30% { transform: translateX(-50%) translateY(-10px) rotate(9deg) scale(1.08); }
+  100% { transform: translateX(-50%) translateY(30px) rotate(200deg) scale(0.35); opacity: 0; }
+}
 @keyframes runner-dash {
   0% { transform: translateX(-50%) scale(1); filter: blur(0); }
   40% { transform: translateX(-50%) scale(1.25); filter: blur(1.5px); }

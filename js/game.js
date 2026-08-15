@@ -215,19 +215,24 @@
       state.marks.push(true);
       audio.play(state.combo > 1 ? "combo" : "correct");
       document.querySelector('.door[data-kind="' + kind + '"]').classList.add("open");
-      burstAt(lane, true);
+      burstAt(lane, true, 0.45);
       const gained = document.createElement("div");
       gained.className = "float-gain";
       gained.textContent = "+" + pts + (state.combo > 1 ? "  ×" + state.combo : "");
       $("#track").appendChild(gained);
+      const obs = spawnObstacle(lane, "mid");
       runnerToLane(lane, () => {
         const r = $("#runner");
-        r.classList.add("dash");
+        r.classList.add("jump");
         setTimeout(() => {
-          r.classList.remove("dash");
+          if (obs) { obs.classList.add("cleared"); setTimeout(() => obs.remove(), 500); }
+        }, 200);
+        setTimeout(() => {
+          r.classList.remove("jump");
+          landingDust(lane);
           resetRunner();
           afterFeedback(true);
-        }, 180);
+        }, 430);
       });
     } else {
       state.combo = 0;
@@ -235,12 +240,30 @@
       audio.play("wrong");
       if (kind) {
         document.querySelector('.door[data-kind="' + kind + '"]').classList.add("wrong");
-        burstAt(lane, false);
+        burstAt(lane, false, 0.72);
       }
-      const r = $("#runner");
-      r.classList.add("bump");
-      setTimeout(() => r.classList.remove("bump"), 420);
-      afterFeedback(false);
+      if (lane >= 0) {
+        const obs = spawnObstacle(lane, "near");
+        runnerToLane(lane, () => {
+          const r = $("#runner");
+          r.classList.add("crash");
+          setTimeout(() => {
+            if (obs) { obs.classList.add("broken"); setTimeout(() => obs.remove(), 500); }
+          }, 70);
+          setTimeout(() => {
+            r.classList.remove("crash");
+            resetRunner();
+            afterFeedback(false);
+          }, 490);
+        });
+      } else {
+        const r = $("#runner");
+        r.classList.add("stumble");
+        setTimeout(() => {
+          r.classList.remove("stumble");
+          afterFeedback(false);
+        }, 520);
+      }
     }
     updateHUD();
   }
@@ -283,10 +306,10 @@
   }
 
   /* ---------------- Partículas ---------------- */
-  function burstAt(laneIndex, ok) {
+  function burstAt(laneIndex, ok, yFrac) {
     const track = $("#track");
     const x = (LANES[laneIndex] / 100) * track.clientWidth;
-    const y = track.clientHeight * 0.45;
+    const y = track.clientHeight * (yFrac == null ? 0.45 : yFrac);
     const colors = ok ? ["#4ee6ff", "#3ddc84", "#2dd4bf"] : ["#ff5d6c", "#ffb454"];
     for (let i = 0; i < (ok ? 14 : 8); i++) {
       const p = document.createElement("span");
@@ -301,6 +324,21 @@
       track.appendChild(p);
       setTimeout(() => p.remove(), 650);
     }
+  }
+
+  /* Obstáculo en un carril (mid = en el camino, near = justo frente al corredor) */
+  function spawnObstacle(laneIndex, pos) {
+    const o = document.createElement("div");
+    o.className = "obstacle";
+    o.style.left = LANES[laneIndex] + "%";
+    o.style.bottom = pos === "near" ? "15%" : "30%";
+    $("#track").appendChild(o);
+    return o;
+  }
+
+  /* Polvo al aterrizar */
+  function landingDust(laneIndex) {
+    burstAt(laneIndex, true, 0.86);
   }
 
   /* ---------------- Final ---------------- */
