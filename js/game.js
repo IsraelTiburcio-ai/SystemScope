@@ -326,12 +326,13 @@
     }
   }
 
-  /* Obstáculo en un carril (mid = en el camino, near = justo frente al corredor) */
+  /* Obstáculo en un carril (mid = sobre el camino del corredor,
+     near = justo frente a él) */
   function spawnObstacle(laneIndex, pos) {
     const o = document.createElement("div");
     o.className = "obstacle";
     o.style.left = LANES[laneIndex] + "%";
-    o.style.bottom = pos === "near" ? "15%" : "30%";
+    o.style.bottom = pos === "near" ? "calc(9% + 26px)" : "calc(9% + 128px)";
     $("#track").appendChild(o);
     return o;
   }

@@ -323,7 +323,7 @@ button { font-family: inherit; color: inherit; cursor: pointer; background: none
 .runner.gone { opacity: 0; }
 
 /* Salto sobre obstáculo (respuesta correcta) */
-.runner.jump { animation: runner-jump 0.44s cubic-bezier(0.25, 0.7, 0.35, 1); }
+.runner.jump { animation: runner-jump 0.46s cubic-bezier(0.25, 0.7, 0.35, 1); }
 .runner.jump .runner-legs { animation: none; transform: rotate(0deg) scaleY(0.5); }
 .runner.jump .runner-body { animation: none; }
 
@@ -340,12 +340,12 @@ button { font-family: inherit; color: inherit; cursor: pointer; background: none
 /* Obstáculo de la pista */
 .obstacle {
   position: absolute;
-  width: 46px; height: 34px;
+  width: 54px; height: 40px;
   transform: translateX(-50%);
-  border-radius: 7px;
-  background: repeating-linear-gradient(135deg, #ffb454 0 9px, #0a1830 9px 18px);
-  border: 2px solid rgba(255, 180, 84, 0.85);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  background: repeating-linear-gradient(135deg, #ffb454 0 10px, #0a1830 10px 20px);
+  border: 2.5px solid rgba(255, 180, 84, 0.9);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 12px rgba(255, 180, 84, 0.25);
   z-index: 9;
   pointer-events: none;
   animation: obstacle-drop 0.28s ease-out both;
@@ -512,7 +512,7 @@ button { font-family: inherit; color: inherit; cursor: pointer; background: none
 @keyframes runner-jump {
   0% { transform: translateX(-50%) translateY(0) scale(1, 1) rotate(0deg); }
   22% { transform: translateX(-50%) translateY(8px) scale(1.18, 0.82) rotate(0deg); }
-  52% { transform: translateX(-50%) translateY(-94px) scale(0.95, 1.06) rotate(-10deg); }
+  52% { transform: translateX(-50%) translateY(-108px) scale(0.95, 1.06) rotate(-10deg); }
   82% { transform: translateX(-50%) translateY(6px) scale(1.16, 0.86) rotate(2deg); }
   100% { transform: translateX(-50%) translateY(0) scale(1, 1) rotate(0deg); }
 }
@@ -560,14 +560,17 @@ button { font-family: inherit; color: inherit; cursor: pointer; background: none
 @keyframes gain-up { from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.8); } 30% { opacity: 1; } to { opacity: 0; transform: translateX(-50%) translateY(-34px) scale(1.1); } }
 @keyframes blink { 0%, 92%, 100% { opacity: 1; } 95% { opacity: 0.2; } }
 
-/* ============ Reduced motion ============ */
+/* ============ Reduced motion ============
+   Con "reducir movimiento" se apagan solo las animaciones ambientales
+   infinitas (pista, piernas, rebote). Las animaciones de feedback
+   (salto, voltereta, obstáculo, puertas, chispas) se conservan porque
+   comunican el resultado de cada respuesta. */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .track-lines, .track-lanes,
+  .runner-body, .runner-legs, .runner .runner-eye,
+  .cover-runner, .cover-runner .runner-legs {
+    animation: none !important;
   }
-  .track-lines { animation: none; }
 }
 
 /* ============ Móvil ============ */
