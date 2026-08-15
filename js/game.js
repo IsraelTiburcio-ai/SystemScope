@@ -24,6 +24,7 @@
     maxCombo: 0,
     score: 0,
     marks: [],
+    answers: [],
     speed: 1,
     startAt: 0,
     timerId: null,
@@ -126,12 +127,14 @@
     state.maxCombo = 0;
     state.score = 0;
     state.marks = [];
+    state.answers = [];
     state.speed = 1;
     state.startAt = performance.now();
     state.locked = false;
     state.round = pickRound();
 
     $("#result").hidden = true;
+    $("#review").hidden = true;
     $("#hud-score").textContent = "0";
     $("#hud-time").textContent = "0s";
     buildDots();
@@ -201,6 +204,7 @@
     const s = state.round[state.idx];
     const lane = window.DOORS.findIndex((d) => d.kind === kind);
     const correct = kind === s.kind;
+    state.answers.push({ text: s.text, kind: s.kind, note: s.note, ok: correct, chosen: kind });
 
     if (correct) {
       state.combo += 1;
@@ -319,7 +323,46 @@
       try { localStorage.setItem(BEST_KEY, String(best)); } catch (e) { /* noop */ }
     }
     refreshBestUI();
+    renderReview();
     setTimeout(() => { $("#result").hidden = false; $("#btn-again").focus(); }, 500);
+  }
+
+  /* ---------------- Revisión de respuestas ---------------- */
+  function renderReview() {
+    const list = $("#review-list");
+    list.innerHTML = "";
+    state.answers.forEach((a, i) => {
+      const door = window.DOORS.find((d) => d.kind === a.kind);
+      const row = document.createElement("div");
+      row.className = "rev-row";
+      row.style.animationDelay = (i * 0.06) + "s";
+      const num = document.createElement("span");
+      num.className = "rev-num";
+      num.textContent = i + 1;
+      const text = document.createElement("div");
+      text.className = "rev-text";
+      text.textContent = a.text;
+      const status = document.createElement("span");
+      status.className = "rev-status " + (a.ok ? "ok" : "no");
+      status.textContent = a.ok ? "✓" : "✗";
+      const kind = document.createElement("span");
+      kind.className = "rev-kind d-" + a.kind;
+      kind.style.setProperty("--door", getComputedStyle(document.querySelector(".d-" + a.kind)).getPropertyValue("--door"));
+      kind.style.setProperty("--door-bg", getComputedStyle(document.querySelector(".d-" + a.kind)).getPropertyValue("--door-bg"));
+      kind.textContent = door.icon + " " + door.name + " · " + a.note;
+      row.appendChild(num);
+      row.appendChild(text);
+      row.appendChild(status);
+      row.appendChild(kind);
+      if (!a.ok && a.chosen) {
+        const chosenDoor = window.DOORS.find((d) => d.kind === a.chosen);
+        const picked = document.createElement("div");
+        picked.className = "rev-picked";
+        picked.innerHTML = "Elegiste: <b>" + (chosenDoor ? chosenDoor.name : "—") + "</b>";
+        row.appendChild(picked);
+      }
+      list.appendChild(row);
+    });
   }
 
   function restart() {
@@ -374,8 +417,11 @@
   });
   $("#btn-play").addEventListener("click", play);
   $("#btn-again").addEventListener("click", restart);
+  $("#btn-again2").addEventListener("click", restart);
   $("#btn-restart").addEventListener("click", restart);
   $("#btn-sound").addEventListener("click", toggleSound);
+  $("#btn-review").addEventListener("click", () => { $("#review").hidden = false; $("#btn-review-back").focus(); });
+  $("#btn-review-back").addEventListener("click", () => { $("#review").hidden = true; $("#btn-review").focus(); });
 
   document.addEventListener("keydown", (e) => {
     if (e.key >= "1" && e.key <= "4") answer(window.DOORS[+e.key - 1].kind);
