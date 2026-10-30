@@ -13,8 +13,12 @@
   const SITUATION_MS = 10000; // tiempo por situación (10 s)
   const LANES = [12.5, 37.5, 62.5, 87.5];
 
-  let sound = localStorage.getItem(SOUND_KEY) !== "0";
-  let best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+  let sound = true;
+  let best = 0;
+  try {
+    sound = localStorage.getItem(SOUND_KEY) !== "0";
+    best = parseInt(localStorage.getItem(BEST_KEY) || "0", 10) || 0;
+  } catch (e) { /* persistence is optional; keep session defaults */ }
 
   const state = {
     playing: false,
