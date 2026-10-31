@@ -8,6 +8,7 @@
   const $ = (s) => document.querySelector(s);
   const SOUND_KEY = "boundaryrun_sound";
   const BEST_KEY = "boundaryrun_best";
+  const resultsBridge = window.OptiLabResults ? window.OptiLabResults.create("SystemScope") : { start() {}, complete() {}, cancel() {} };
 
   const ROUNDS = 6;          // decisiones por partida
   const SITUATION_MS = 10000; // tiempo por situación (10 s)
@@ -123,6 +124,7 @@
 
   /* ---------------- Partida ---------------- */
   function play() {
+    resultsBridge.start();
     audio.play("select");
     state.playing = true;
     state.idx = 0;
@@ -357,6 +359,7 @@
     r.style.left = "50%";
 
     const seconds = Math.round((performance.now() - state.startAt) / 1000);
+    resultsBridge.complete({ reason: "completed", correct: state.correct, total: ROUNDS, durationMs: seconds * 1000, score: state.score });
     $("#res-correct").textContent = state.correct + "/" + ROUNDS;
     $("#res-time").textContent = seconds + " s";
     $("#res-speed").textContent = starsFor(state.correct);
